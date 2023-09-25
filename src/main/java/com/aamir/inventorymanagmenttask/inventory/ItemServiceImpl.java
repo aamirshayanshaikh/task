@@ -3,23 +3,33 @@ package com.aamir.inventorymanagmenttask.inventory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService{
 
+    private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
 
-    public List<Item> findAllItems(){
-        return itemRepository.findAll();
+
+    @Override
+    public ItemDto saveItem(ItemDto itemDto) {
+        return itemMapper.entityToDto(
+                itemRepository.save(itemMapper.dtoToEntity(itemDto))
+        );
     }
 
     @Override
-    public Item saveItem(ItemDto itemDto) {
-        return itemRepository.save(Item.builder()
-                .itemName(itemDto.getItemName())
-                .itemBuyingPrice(itemDto.getItemBuyingPrice())
-                .itemSellingPrice(itemDto.getItemSellingPrice())
-                .itemEnteredByUser(itemDto.getItemEnteredByUser())
-                .build());
+    public ItemDto findItemById(Long id) {
+        return itemMapper.entityToDto(
+                itemRepository.findById(id).get()
+        );
+    }
+
+    public List<ItemDto> findAllItems(){
+        return itemRepository.findAll().stream()
+                .map(itemMapper::entityToDto)
+                .collect(Collectors.toList());
+
     }
 }

@@ -1,5 +1,6 @@
 package com.aamir.inventorymanagmenttask.inventory;
 
+import com.sun.istack.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 public class ItemDto {
 
-    private Integer itemId;
+    private Long itemId;
     private String itemName;
     private String	itemEnteredByUser;
     private Timestamp itemEnteredDate;

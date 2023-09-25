@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface ItemService {
 
-    Item saveItem(ItemDto itemDto);
-    List<Item> findAllItems();
+    ItemDto saveItem(ItemDto itemDto);
+    ItemDto findItemById(Long id);
+    List<ItemDto> findAllItems();
 
 }
