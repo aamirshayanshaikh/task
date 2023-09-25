@@ -1,11 +1,14 @@
 package com.aamir.inventory;
 
-import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
 public class ItemDto {
@@ -18,5 +21,5 @@ public class ItemDto {
     private Double itemSellingPrice;
     private Timestamp itemLastModifiedDate;
     private String itemLastModifiedByUser;
-    private String itemStatus;
+    private String isItemAvailable;
 }

@@ -31,4 +31,5 @@ public class Item {
     private Timestamp itemLastModifiedDate;
     private String itemLastModifiedByUser;
     private String itemStatus;
+    private String isItemAvailable;
 }

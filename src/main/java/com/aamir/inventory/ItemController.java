@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/app")
 @RequiredArgsConstructor
 @RestController
@@ -54,19 +54,9 @@ public class ItemController {
             itemDto.setItemId(item.getItemId());
             itemDto = itemService.saveItem(itemDto);
 
-            return ResponseHandler.response(
-                    ResponseConstants.SUCCESS,
-                    itemDto,
-                    ResponseConstants.SUCCESS_MESSAGE,
-                    HttpStatus.OK
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(itemDto);
         } else {
-            return ResponseHandler.response(
-                    ResponseConstants.FAIL,
-                    itemService.findAllItems(),
-                    ResponseConstants.FAILURE_MESSAGE,
-                    HttpStatus.NOT_FOUND
-            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
     }
@@ -131,12 +121,8 @@ public class ItemController {
 
     @GetMapping("/item")
     public ResponseEntity<Object> findAllItems() {
-        return ResponseHandler.response(
-                ResponseConstants.SUCCESS,
-                itemService.findAllItems(),
-                ResponseConstants.SUCCESS_MESSAGE,
-                HttpStatus.OK
-        );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(itemService.findAllItems());
     }
 
 
