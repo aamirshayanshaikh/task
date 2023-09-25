@@ -1,4 +1,4 @@
-package com.aamir.inventorymanagmenttask.response;
+package com.aamir.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

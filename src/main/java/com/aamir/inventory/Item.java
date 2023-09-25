@@ -1,15 +1,27 @@
-package com.aamir.inventorymanagmenttask.inventory;
+package com.aamir.inventory;
 
-import com.sun.istack.NotNull;
+
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.sql.Timestamp;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class ItemDto {
+@Entity
+public class Item {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long itemId;
     private String itemName;
     private String	itemEnteredByUser;

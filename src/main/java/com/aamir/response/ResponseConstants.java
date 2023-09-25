@@ -1,4 +1,4 @@
-package com.aamir.inventorymanagmenttask.response;
+package com.aamir.response;
 
 public class ResponseConstants {
 
