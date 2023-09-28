@@ -1,4 +1,4 @@
-package com.aamir.inventory;
+package com.aamir.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

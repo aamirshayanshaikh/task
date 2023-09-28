@@ -1,4 +1,4 @@
-package com.aamir.inventory;
+package com.aamir.item;
 
 import com.aamir.response.ResponseConstants;
 import com.aamir.response.ResponseHandler;
@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -34,6 +36,11 @@ public class ItemController {
                 );
             }
         }
+
+        itemDto.setItemEnteredByUser("Aamir");
+        itemDto.setItemLastModifiedByUser("Shayan");
+        itemDto.setItemEnteredDate(new Date());
+        itemDto.setIsItemAvailable(ItemStatus.AVAILABLE.getStatus());
         itemService.saveItem(itemDto);
         return ResponseHandler.response(
                 ResponseConstants.SUCCESS,
@@ -141,11 +148,11 @@ public class ItemController {
     }*/
 
 
-    @GetMapping
+    @GetMapping("/items-by-pagination")
     public Page<Item> findAllItemsByPagination(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy) {
+            @RequestParam(defaultValue = "itemId") String sortBy) {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortBy));
         return itemService.findAllItemsByPagination(pageable);

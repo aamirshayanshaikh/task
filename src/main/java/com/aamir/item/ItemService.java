@@ -1,4 +1,4 @@
-package com.aamir.inventory;
+package com.aamir.item;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
