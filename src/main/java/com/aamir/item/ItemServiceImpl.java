@@ -18,16 +18,9 @@ public class ItemServiceImpl implements ItemService{
 
 
     @Override
-    public ItemDto saveItem(ItemDto itemDto) {
+    public ItemDto saveItem(Item item) {
         return itemMapper.entityToDto(
-                itemRepository.save(
-                        Item.builder()
-                                .itemId(itemDto.getItemId())
-                                .itemSellingPrice(itemDto.getItemSellingPrice())
-                                .itemBuyingPrice(itemDto.getItemBuyingPrice())
-                                .itemName(itemDto.getItemName())
-                                .itemLastModifiedDate(itemDto.getItemLastModifiedDate())
-                                .build())
+                itemRepository.save(item)
         );
 
     }

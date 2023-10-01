@@ -1,7 +1,5 @@
 package com.aamir.item;
 
-import com.aamir.auth.User;
-import com.aamir.config.OktaApiService;
 import com.aamir.response.ResponseConstants;
 import com.aamir.response.ResponseHandler;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +22,11 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    private final OktaApiService oktaApiService;
-
-
+    private final ItemMapper itemMapper;
 
     @PostMapping("/item")
     public ResponseEntity<Object> saveItem(@RequestBody ItemDto itemDto) {
 
-        User user = oktaApiService.getCurrentUser();
 
         if (itemDto.getItemId() == null) {
             Optional<Item> optionalItem = itemService.findItemById(itemDto.getItemId());
@@ -44,11 +39,11 @@ public class ItemController {
             }
         }
 
-        itemDto.setItemEnteredByUser(user.getProfile().getFirstName());
-        itemDto.setItemLastModifiedByUser(user.getProfile().getFirstName());
+        itemDto.setItemEnteredByUser("Aamir");
+        itemDto.setItemLastModifiedByUser("Aamir");
         itemDto.setItemEnteredDate(new Date());
         itemDto.setIsItemAvailable(ItemStatus.AVAILABLE.getStatus());
-        itemService.saveItem(itemDto);
+        itemService.saveItem(itemMapper.dtoToEntity(itemDto));
         return ResponseHandler.response(
                 ResponseConstants.SUCCESS,
                 ResponseConstants.SUCCESS_MESSAGE,
@@ -61,16 +56,17 @@ public class ItemController {
     public ResponseEntity<Object> updateItem(@PathVariable Long itemId,
                                              @RequestBody ItemDto itemDto) {
 
-        User user = oktaApiService.getCurrentUser();
-
         Optional<Item> optionalItem = itemService.findItemById(itemId);
 
         if (optionalItem.isPresent()) {
 
             Item item = optionalItem.get();
             itemDto.setItemId(item.getItemId());
-            itemDto.setItemLastModifiedByUser(user.getProfile().getFirstName());
-            itemDto = itemService.saveItem(itemDto);
+            item.setItemLastModifiedByUser("Aamir");
+            item.setItemBuyingPrice(itemDto.getItemBuyingPrice());
+            item.setItemSellingPrice(itemDto.getItemSellingPrice());
+            item.setItemName(itemDto.getItemName());
+            itemDto = itemService.saveItem(item);
 
             return ResponseEntity.status(HttpStatus.OK).body(itemDto);
         } else {
@@ -139,7 +135,6 @@ public class ItemController {
 
     @GetMapping("/item")
     public ResponseEntity<Object> findAllItems() {
-        User user = oktaApiService.getCurrentUser();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(itemService.findAllItems());

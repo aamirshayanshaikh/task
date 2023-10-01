@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    ItemDto saveItem(ItemDto itemDto);
+    ItemDto saveItem(Item item);
 
     Optional<Item> findItemById(Long id);
 
