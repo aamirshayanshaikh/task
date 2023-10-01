@@ -1,5 +1,7 @@
 package com.aamir.item;
 
+import com.aamir.auth.User;
+import com.aamir.config.OktaApiService;
 import com.aamir.response.ResponseConstants;
 import com.aamir.response.ResponseHandler;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/app")
 @RequiredArgsConstructor
 @RestController
@@ -22,13 +24,18 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    private final OktaApiService oktaApiService;
 
-    @PostMapping("item")
+
+
+    @PostMapping("/item")
     public ResponseEntity<Object> saveItem(@RequestBody ItemDto itemDto) {
 
-        if (itemDto.getItemId() != null) {
+        User user = oktaApiService.getCurrentUser();
+
+        if (itemDto.getItemId() == null) {
             Optional<Item> optionalItem = itemService.findItemById(itemDto.getItemId());
-            if (!optionalItem.isPresent()) {
+            if (optionalItem.isPresent()) {
                 return ResponseHandler.response(
                         ResponseConstants.FAIL,
                         ResponseConstants.FAILURE_MESSAGE,
@@ -37,8 +44,8 @@ public class ItemController {
             }
         }
 
-        itemDto.setItemEnteredByUser("Aamir");
-        itemDto.setItemLastModifiedByUser("Shayan");
+        itemDto.setItemEnteredByUser(user.getProfile().getFirstName());
+        itemDto.setItemLastModifiedByUser(user.getProfile().getFirstName());
         itemDto.setItemEnteredDate(new Date());
         itemDto.setIsItemAvailable(ItemStatus.AVAILABLE.getStatus());
         itemService.saveItem(itemDto);
@@ -53,12 +60,16 @@ public class ItemController {
     @PutMapping("item/{itemId}")
     public ResponseEntity<Object> updateItem(@PathVariable Long itemId,
                                              @RequestBody ItemDto itemDto) {
+
+        User user = oktaApiService.getCurrentUser();
+
         Optional<Item> optionalItem = itemService.findItemById(itemId);
 
         if (optionalItem.isPresent()) {
 
             Item item = optionalItem.get();
             itemDto.setItemId(item.getItemId());
+            itemDto.setItemLastModifiedByUser(user.getProfile().getFirstName());
             itemDto = itemService.saveItem(itemDto);
 
             return ResponseEntity.status(HttpStatus.OK).body(itemDto);
@@ -128,12 +139,14 @@ public class ItemController {
 
     @GetMapping("/item")
     public ResponseEntity<Object> findAllItems() {
+        User user = oktaApiService.getCurrentUser();
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(itemService.findAllItems());
     }
 
 
-   /* @GetMapping("item")
+    @GetMapping("/item-by-status-and-user")
     public ResponseEntity<Object> findByItemStatusAndUser(@RequestParam(name = "itemStatus") String itemStatus,
                                                           @RequestParam(name = "itemEnteredByUser") String itemEnteredByUser) {
 
@@ -145,17 +158,24 @@ public class ItemController {
                 HttpStatus.OK
         );
 
-    }*/
+    }
 
 
     @GetMapping("/items-by-pagination")
     public Page<Item> findAllItemsByPagination(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "itemId") String sortBy) {
+            @RequestParam(defaultValue = "itemId") String sortBy
+            ) {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortBy));
         return itemService.findAllItemsByPagination(pageable);
     }
+
+
+
+
+
+
 
 }
